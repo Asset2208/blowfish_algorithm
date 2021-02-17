@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html">
+<div layout:fragment="site_content" >
+    <div class="container">
+        <div class="row mt-5 mb-5">
+            <div class="col-6 offset-3">
+                <div class="jumbotron">
+                    <h1 class="display-4">Caesar's cipher</h1>
+                    <div class="alert alert-primary" role="alert" th:if="${param.success}">
+                        <p>Plain text: <span th:text="${plain_text}"></span></p>
+                        <p>Shift number: <span th:text="${shift}"></span></p>
+                        <p>Cipher text: <span th:text="${result}"></span></p>
+                    </div>
+                    <form th:action="@{'/encrypt_caesar'}" method="post" class="mb-5">
+                        <div class="form-group">
+                            <label>Plain text:</label>
+                            <input type="text" name="plain_text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Shift number: </label>
+                            <input type="number" name="shift" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success float-right">Encrypt</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

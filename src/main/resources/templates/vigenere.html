@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html">
+<div layout:fragment="site_content" >
+    <div class="container">
+        <div class="row mt-5 mb-5">
+            <div class="col-6 offset-3">
+                <div class="jumbotron">
+                    <h1 class="display-4">Vigenere's cipher</h1>
+                    <h2>Encrypt</h2>
+                    <div class="alert alert-primary" role="alert" th:if="${param.success_encrypt}">
+                        <p>Plain text: <span th:text="${plain_text}"></span></p>
+                        <p>Plain text: <span th:text="${key_word}"></span></p>
+                        <p>Cipher text: <span th:text="${result}"></span></p>
+                    </div>
+                    <form th:action="@{'/encrypt_vigenere'}" method="post" class="mb-5">
+                        <div class="form-group">
+                            <label>Plain text:</label>
+                            <input type="text" style="text-transform: uppercase;" name="plain_text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Key word: </label>
+                            <input type="text" style="text-transform: uppercase;" name="keyword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success float-right">Encrypt</button>
+                        </div>
+                    </form>
+
+                    <div class="alert alert-primary" role="alert" th:if="${param.success_decrypt}">
+                        <p>Cipher text: <span th:text="${cipher_text}"></span></p>
+                        <p>Shift number: <span th:text="${key_word}"></span></p>
+                        <p>Plain text: <span th:text="${result}"></span></p>
+                    </div>
+                    <h2 class="mt-5">Decrypt</h2>
+                    <form th:action="@{'/decrypt_vigenere'}" method="post" class="mb-5">
+                        <div class="form-group">
+                            <label>Cipher text:</label>
+                            <input type="text" name="cipher_text" class="form-control" required style="text-transform: uppercase;">
+                        </div>
+                        <div class="form-group">
+                            <label>Key word: </label>
+                            <input type="text" style="text-transform: uppercase;" name="keyword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success float-right">Decrypt</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
