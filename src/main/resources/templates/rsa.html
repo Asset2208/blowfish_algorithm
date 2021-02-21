@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html">
+<div layout:fragment="site_content" >
+    <div class="container">
+        <div class="row mt-5 mb-5">
+            <div class="col-6 offset-3">
+                <div class="jumbotron">
+                    <h1 class="display-4">RSA Algorithm</h1>
+                    <div class="alert alert-primary" role="alert" th:if="${param.success}">
+                        <p>Plain text: <span th:text="${plain_text}"></span></p>
+                        <p>Number (p): <span th:text="${number_p}"></span></p>
+                        <p>Number (q): <span th:text="${number_q}"></span></p>
+                        <div>
+                            <p th:each="letter : ${result}">
+                                <b><span th:text="${letter.letter}"></span></b>: Y<span th:text="${letter.order}"></span> = <span th:text="${letter.alph_order}"></span>^<span th:text="${number_e}"></span> mod <span th:text="${number_n}"></span> = <span th:text="${letter.result}"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+
+                        // Function to check prime number
+                        function p() {
+
+                            var n, i, flag = true;
+
+                            // Getting the value form text
+                            // field using DOM
+                            n = document.myform.number_p.value;
+                            n = parseInt(n)
+                            for(i = 2; i <= n - 1; i++)
+                                if (n % i == 0) {
+                                    flag = false;
+                                    break;
+                                }
+
+                            // Check and display alert message
+                            if (flag != true) {
+                                alert(n + " is not prime");
+                                document.myform.number_p.value = null;
+                            }
+
+                        }
+                        function q() {
+
+                            var n, i, flag = true;
+
+                            // Getting the value form text
+                            // field using DOM
+                            n = document.myform.number_q.value;
+                            n = parseInt(n)
+                            for(i = 2; i <= n - 1; i++)
+                                if (n % i == 0) {
+                                    flag = false;
+                                    break;
+                                }
+
+                            // Check and display alert message
+                            if (flag != true) {
+                                alert(n + " is not prime");
+                                document.myform.number_q.value = null;
+                            }
+
+                        }
+                    </script>
+                    <form th:action="@{'/encrypt_rsa'}" method="post" class="mb-5" name="myform">
+                        <div class="form-group">
+                            <label>Plain text:</label>
+                            <input type="text" name="plain_text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Number (p): </label>
+                            <input type="number" name="number_p" class="form-control" required onchange="p()">
+                        </div>
+                        <div class="form-group">
+                            <label>Number (q): </label>
+                            <input type="number" name="number_q" class="form-control" required onchange="q()">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success float-right">Encrypt</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

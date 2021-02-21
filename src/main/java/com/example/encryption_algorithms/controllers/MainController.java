@@ -1,5 +1,6 @@
 package com.example.encryption_algorithms.controllers;
 
+import com.example.encryption_algorithms.model.RSAbody;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -19,13 +21,18 @@ public class MainController {
     }
 
     @GetMapping("/caesar")
-    public String caesar(Model model) {
+    public String caesar() {
         return "caesar";
     }
 
     @GetMapping("/vigenere")
-    public String vigenere(Model model) {
+    public String vigenere() {
         return "vigenere";
+    }
+
+    @GetMapping("/rsa")
+    public String rsa() {
+        return "rsa";
     }
 
     @PostMapping("/encrypt_caesar")
@@ -133,5 +140,75 @@ public class MainController {
         redirectAttrs.addFlashAttribute("result", plain_text);
 
         return "redirect:/vigenere?success_decrypt";
+    }
+
+    static int gcd(int e, int z)
+    {
+        if (e == 0)
+            return z;
+        else
+            return gcd(z % e, e);
+    }
+
+    static int get_e(int z){
+        int e;
+        for (e = 2; e < z; e++) {
+
+            // e is for public key exponent
+            if (gcd(e, z) == 1) {
+                break;
+            }
+        }
+        return e;
+    }
+
+    static int get_d(int e, int z){
+        int d = 0;
+        for (int i = 0; i <= 9; i++) {
+            int x = 1 + (i * z);
+
+            // d is for private key exponent
+            if (x % e == 0) {
+                d = x / e;
+                break;
+            }
+        }
+        return d;
+    }
+
+    @PostMapping("/encrypt_rsa")
+    public String rsa_encrypt(@RequestParam("plain_text") String plain_text,
+                                 @RequestParam("number_p") int p,
+                                 @RequestParam("number_q") int q,RedirectAttributes redirectAttrs){
+
+        int n, z, d = 0, e;
+        final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        n = p * q;
+        z = (p - 1) * (q - 1);
+        e = get_e(z);
+//        d = get_d(e, z);
+
+        ArrayList<RSAbody> rsaBody = new ArrayList<>();
+        for(int i = 0; i < plain_text.length(); i++)
+        {
+            char ch = plain_text.charAt(i);
+            if(ch != ' '){
+                int alph_order = alphabet.indexOf(ch) + 1;
+                int result = (int) (Math.pow(alph_order, e) % n);
+                rsaBody.add(new RSAbody(i+1, ch, alph_order, result));
+            }
+            else {
+                rsaBody.add(new RSAbody(i+1, ch, 0, 0));
+            }
+        }
+
+        redirectAttrs.addFlashAttribute("plain_text", plain_text);
+        redirectAttrs.addFlashAttribute("number_p", p);
+        redirectAttrs.addFlashAttribute("number_q", q);
+        redirectAttrs.addFlashAttribute("number_e", e);
+        redirectAttrs.addFlashAttribute("number_n", n);
+        redirectAttrs.addFlashAttribute("result", rsaBody);
+
+        return "redirect:/rsa?success";
     }
 }
